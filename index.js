@@ -1,5 +1,5 @@
 const express = require("express");
-const { request, response } = require("express");
+const { req, res } = require("express");
 const app = express();
 
 let persons = [
@@ -26,13 +26,13 @@ let persons = [
 ];
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello World!<h1>");
+  res.send("<h1>Welcome!<h1>");
 });
 
 app.get("/info", (req, res) => {
   res.send(`
-  <p>Phonebook has info for ${persons.length} people.</p>
-  <p>${Date()}</p>`)
+    <p>Phonebook has info for ${persons.length} people.</p>
+    <p>${Date()}</p>`)
 })
 
 app.get("/api/persons", (req, res) => {
@@ -42,10 +42,15 @@ app.get("/api/persons", (req, res) => {
 app.get("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id)
   const person = persons.find(p => p.id === id)
-
   person
     ? res.json(person)
     : res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  persons = persons.filter(p => p.id !== id)
+  res.status(204).end()
 })
 
 const PORT = 3001;
