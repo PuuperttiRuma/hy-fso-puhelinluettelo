@@ -1,10 +1,13 @@
 const express = require('express')
-const morgan = require('morgan')
-const { request, response } = require('express')
-const app = express();
+const morgan = require('morgan');
+const { request, response } = require('express');
+//const { request, response } = require('express')
 
+const app = express();
 app.use(express.json())
+
 app.use(morgan('tiny'))
+morgan.token('data', (request, response) => response.body)
 
 let persons = [
   {
@@ -60,6 +63,7 @@ app.get("/api/persons/:id", (request, response) => {
 app.post('/api/persons', (request, response) => {
   //Error handling
   const body = request.body
+  console.log(body);
   if (!body.name){
     return response.status(400).json({error: 'name missing'})
   }
