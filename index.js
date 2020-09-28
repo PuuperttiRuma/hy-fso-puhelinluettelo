@@ -40,9 +40,9 @@ const generateId = () => {
 
 //#region Endpoints
 
-app.get("/", (request, response) => {
-  response.send("<h1>Welcome!<h1>");
-});
+// app.get("/", (request, response) => {
+//   response.send("<h1>Welcome!<h1>");
+// });
 
 app.get("/info", (request, response) => {
   response.send(`
