@@ -37,10 +37,6 @@ let persons = [
   },
 ];
 
-const generateId = () => {
-  return Math.floor((Math.random() * 1000000))
-}
-
 //#region Endpoints
 
 app.get("/info", (request, response) => {
@@ -49,12 +45,14 @@ app.get("/info", (request, response) => {
     <p>${Date()}</p>`)
 })
 
+// GET ALL CONTACTS
 app.get("/api/persons", (request, response) => {  
   Person.find({}).then((persons) => {
     response.json(persons)
   });
 });
 
+// GET ONE CONTACT
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(p => p.id === id)
@@ -63,10 +61,11 @@ app.get("/api/persons/:id", (request, response) => {
     : response.status(404).end()
 })
 
+// ADD CONTACT
 app.post('/api/persons', (request, response) => {
-  //Error handling
   const body = request.body
-  console.log(body);
+
+  //Error handling
   if (!body.name){
     return response.status(400).json({error: 'name missing'})
   }
@@ -77,17 +76,15 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({error: 'name must be unique'})
   }
 
-  //Implementation
-  const person = {
+  //DB save
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId()
-  }
-
-  persons = persons.concat(person)
-  response.json(person)
+  })  
+  person.save().then(savedPerson => response.json(savedPerson))
 })
 
+// DELETE CONTACT
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   persons = persons.filter(p => p.id !== id)

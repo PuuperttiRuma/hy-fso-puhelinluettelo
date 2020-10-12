@@ -1,5 +1,5 @@
-# POST http://localhost:3001/api/persons
-POST https://vast-forest-15425.herokuapp.com/api/persons
+POST http://localhost:3001/api/persons
+# POST https://vast-forest-15425.herokuapp.com/api/persons
 Content-Type: application/json
 
 {
