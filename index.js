@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const { request, response } = require('express')
+const mongoose = require('mongoose')
+const Person = require('./models/person')
+//const { request, response } = require('express')
 
 const app = express()
   .use(express.json())
@@ -40,18 +43,16 @@ const generateId = () => {
 
 //#region Endpoints
 
-// app.get("/", (request, response) => {
-//   response.send("<h1>Welcome!<h1>");
-// });
-
 app.get("/info", (request, response) => {
   response.send(`
     <p>Phonebook has info for ${persons.length} people.</p>
     <p>${Date()}</p>`)
 })
 
-app.get("/api/persons", (request, response) => {
-  response.json(persons);
+app.get("/api/persons", (request, response) => {  
+  Person.find({}).then((persons) => {
+    response.json(persons)
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -82,6 +83,7 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
     id: generateId()
   }
+
   persons = persons.concat(person)
   response.json(person)
 })
