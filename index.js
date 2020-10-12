@@ -5,6 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const Person = require("./models/person");
 const { request, response } = require("express");
+const { update } = require("./models/person");
 //const { request, response } = require('express')
 
 const app = express()
@@ -42,9 +43,13 @@ let persons = [
 
 // INFO PAGE
 app.get("/info", (request, response) => {
-  response.send(`
-    <p>Phonebook has info for ${persons.length} people.</p>
+  Person.estimatedDocumentCount()
+    .then(count => {
+      response.send(`
+    <p>Phonebook has info for ${count} people.</p>
     <p>${Date()}</p>`);
+    })
+  
 });
 
 // GET ALL CONTACTS
@@ -66,7 +71,6 @@ app.get("/api/persons/:id", (request, response, next) => {
 // ADD CONTACT
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-  console.log(body)
   
   //Error handling
   if (!body.name) {
@@ -83,12 +87,33 @@ app.post("/api/persons", (request, response) => {
   const person = new Person({
     name: body.name,
     number: body.number,
-  });
-  console.log(person)
+  })
 
   person.save()
     .then((savedPerson) => response.json(savedPerson))
-});
+})
+
+// UPDATE NUMBER
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  //Error handling
+  if (!body.name) {
+    return response.status(400).json({ error: "name missing" });
+  }
+  if (!body.number) {
+    return response.status(400).json({ error: "phone number missing" });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, {new:true})
+    .then(updatedPerson => response.json(updatedPerson))
+    .catch(error => next(error))
+})
 
 // DELETE CONTACT
 app.delete("/api/persons/:id", (request, response, next) => {
