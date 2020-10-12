@@ -39,6 +39,7 @@ let persons = [
 
 //#region Endpoints
 
+// INFO PAGE
 app.get("/info", (request, response) => {
   response.send(`
     <p>Phonebook has info for ${persons.length} people.</p>
@@ -54,11 +55,19 @@ app.get("/api/persons", (request, response) => {
 
 // GET ONE CONTACT
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(p => p.id === id)
-  person
-    ? response.json(person)
-    : response.status(404).end()
+  // const id = Number(request.params.id)
+  // const person = persons.find(p => p.id === id)
+  Person.findById(request.params.id)
+    .then(person =>{
+      person
+      ? response.json(person)
+      : response.status(404).end()
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({error: 'malformatted id'})
+    })
+  
 })
 
 // ADD CONTACT
