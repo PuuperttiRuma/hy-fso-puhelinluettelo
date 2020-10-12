@@ -66,7 +66,8 @@ app.get("/api/persons/:id", (request, response, next) => {
 // ADD CONTACT
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-
+  console.log(body)
+  
   //Error handling
   if (!body.name) {
     return response.status(400).json({ error: "name missing" });
@@ -74,16 +75,19 @@ app.post("/api/persons", (request, response) => {
   if (!body.number) {
     return response.status(400).json({ error: "phone number missing" });
   }
-  if (persons.some((p) => p.name === body.name)) {
-    return response.status(400).json({ error: "name must be unique" });
-  }
+  // if (persons.some((p) => p.name === body.name)) {
+  //   return response.status(400).json({ error: "name must be unique" });
+  // }
 
   //DB save
   const person = new Person({
     name: body.name,
     number: body.number,
   });
-  person.save().then((savedPerson) => response.json(savedPerson));
+  console.log(person)
+
+  person.save()
+    .then((savedPerson) => response.json(savedPerson))
 });
 
 // DELETE CONTACT
