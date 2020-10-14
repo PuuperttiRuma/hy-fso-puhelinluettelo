@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 // const db = "phonebook";
 // const url = `mongodb+srv://fullstack:${password}@cluster0.iqm6y.mongodb.net/${db}?retryWrites=true&w=majority`;
@@ -18,9 +19,16 @@ mongoose.connect(url, {
 }))
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: { 
+    type: String,
+    required: [true, 'Name field is missing'],
+    unique: [true, 'Name already exists in the database'],
+    minlength: [3, 'Name must be at least 3 characters long']
+  },
+  number: { type: String, minlength: [8, 'Number must be at least 8 digits long'] },
 });
+
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
   transform: (document, returnObject) => {

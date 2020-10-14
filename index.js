@@ -69,16 +69,16 @@ app.get("/api/persons/:id", (request, response, next) => {
 });
 
 // ADD CONTACT
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
   
-  //Error handling
-  if (!body.name) {
-    return response.status(400).json({ error: "name missing" });
-  }
-  if (!body.number) {
-    return response.status(400).json({ error: "phone number missing" });
-  }
+  //Validating
+  // if (!body.name) {
+  //   return response.status(400).json({ error: "name missing" });
+  // }
+  // if (!body.number) {
+  //   return response.status(400).json({ error: "phone number missing" });
+  // }
   // if (persons.some((p) => p.name === body.name)) {
   //   return response.status(400).json({ error: "name must be unique" });
   // }
@@ -91,19 +91,12 @@ app.post("/api/persons", (request, response) => {
 
   person.save()
     .then((savedPerson) => response.json(savedPerson))
+    .catch(error => next(error))     
 })
 
 // UPDATE NUMBER
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
-
-  //Error handling
-  if (!body.name) {
-    return response.status(400).json({ error: "name missing" });
-  }
-  if (!body.number) {
-    return response.status(400).json({ error: "phone number missing" });
-  }
 
   const person = {
     name: body.name,
@@ -132,7 +125,9 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id'})
-  }
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message})
+  }  
   next(error)
 };
 
