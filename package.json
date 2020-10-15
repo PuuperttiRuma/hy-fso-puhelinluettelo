@@ -5,11 +5,22 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-ui": "rm -rf build && cd ../hyu-fs-open/osa2/puhelinluettelo/ && npm run build --prod && cp -r build ../../../hy-fso-puhelinluettelo/"
   },
   "author": "Tommi Haapanen",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "nodemon": "^2.0.4"
   }
 }
